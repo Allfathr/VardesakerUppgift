@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -44,8 +45,11 @@ public class Gui extends Application{
 		Button visa = new Button("Visa");
 		Button borsKrasch = new Button("Börskrasch");
 		
+		ToggleGroup group = new ToggleGroup();
 		namnSortering = new RadioButton("Namn");
+		namnSortering.setToggleGroup(group);
 		vardeSortering = new RadioButton("Värde");
+		vardeSortering.setToggleGroup(group);
 		
 		rubrik.setStyle("-fx-font-weight: bold");
 		ny.setStyle("-fx-font-weight: bold");
