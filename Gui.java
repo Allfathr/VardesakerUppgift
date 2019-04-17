@@ -2,11 +2,6 @@
 // Karl Jonsson 980226-8293
 
 import java.util.*;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -37,6 +32,7 @@ public class Gui extends Application{
 	private TextArea textArea;
 	private RadioButton namnSortering;
 	private RadioButton vardeSortering;
+	private ComboBox<String> comboBox;
 	ArrayList<Vardesaker> allaSaker = new ArrayList<>();
 	
 	@Override
@@ -51,7 +47,7 @@ public class Gui extends Application{
 		textArea.setEditable(false);
 		
 		ObservableList<String> val = FXCollections.observableArrayList("Smycke", "Aktie", "Apparat");
-		ComboBox<String> comboBox = new ComboBox<>(val);
+		comboBox = new ComboBox<>(val);
 		
 		Button visa = new Button("Visa");
 		Button borsKrasch = new Button("Börskrasch");
@@ -192,8 +188,7 @@ public class Gui extends Application{
 	class NewHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
 			try {
-				ComboBox cb = (ComboBox) event.getSource();
-				String choice = (String) cb.getValue();
+				String choice = comboBox.getValue();
 				
 				if (choice.equalsIgnoreCase("smycke")) {
 					SmyckenAlert sa = new SmyckenAlert();
