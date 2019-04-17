@@ -33,7 +33,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
-public class Gui<Arv> extends Application{
+public class Gui extends Application{
 	private TextArea textArea;
 	private RadioButton namnSortering;
 	private RadioButton vardeSortering;
