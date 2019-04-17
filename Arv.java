@@ -1,5 +1,5 @@
-// Anton Sandström ansa6928
-// Karl Jonsson 
+// Anton Sandström 960726-4430
+// Karl Jonsson 980226-8293
 
 abstract class Vardesaker {
 	private String namn;
