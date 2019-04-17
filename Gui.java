@@ -36,7 +36,7 @@ public class Gui extends Application {
 		
 	}
 	
-	class showHandler implements EventHandler<ActionEvent> {
+	class ShowHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
 			area.setText("");
 			area.setText("This is working");
@@ -56,6 +56,17 @@ public class Gui extends Application {
 				for (Vardesaker sak : allaSaker) {
 					area.appendText(sak.toString());
 					area.appendText("\n)");
+				}
+			}
+		}
+	}
+	
+	class ExchangeHandler implements EventHandler<ActionEvent> {
+		public void handle(ActionEvent event) {
+			for (Vardesaker sak : allaSaker) {
+				if (sak instanceof Aktie) {
+					Aktie a = (Aktie) sak;
+					a.setNyKurs(0);
 				}
 			}
 		}
