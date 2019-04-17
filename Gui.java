@@ -38,6 +38,7 @@ public class Gui extends Application{
 		
 		textArea = new TextArea();
 		textArea.setPrefHeight(300);
+		textArea.setEditable(false);
 		
 		ObservableList<String> val = FXCollections.observableArrayList("Smycke", "Aktie", "Apparat");
 		ComboBox<String> comboBox = new ComboBox<>(val);
@@ -48,6 +49,7 @@ public class Gui extends Application{
 		ToggleGroup group = new ToggleGroup();
 		namnSortering = new RadioButton("Namn");
 		namnSortering.setToggleGroup(group);
+		namnSortering.setSelected(true);
 		vardeSortering = new RadioButton("Värde");
 		vardeSortering.setToggleGroup(group);
 		
@@ -88,6 +90,7 @@ public class Gui extends Application{
 		Scene scene = new Scene(root);
 		primaryStage.setScene(scene);
 		primaryStage.show();
+		primaryStage.setTitle("Sakregister");
 }
 	
 	class NewHandler implements EventHandler<ActionEvent> {
