@@ -1,61 +1,117 @@
 // Anton Sandström ansa6928
-// Karl Jonsson 
+// Karl Jonsson
 
 import java.util.*;
 import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ComboBox;
+import javafx.geometry.Pos;
+import javafx.stage.Stage;
+import javafx.geometry.Insets;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 
-public class Gui extends Application {
-	private TextArea area;
-	private RadioButton nameButton;
-	private RadioButton valueButton;
+public class Gui extends Application{
+	private TextArea textArea;
+	private RadioButton namnSortering;
+	private RadioButton vardeSortering;
 	ArrayList<Vardesaker> allaSaker = new ArrayList<>();
 	
 	@Override
 	public void start(Stage primaryStage) {
-		Pane root = new FlowPane();
-		Label headLab = new Label("Värdesaker");
+		BorderPane root = new BorderPane();
+		
+		Label rubrik = new Label("Värdesaker");
+		Label ny = new Label("Ny:");
+		Label sortering = new Label("Sortering");
+		
+		textArea = new TextArea();
+		textArea.setPrefHeight(300);
+		
+		ObservableList<String> val = FXCollections.observableArrayList("Smycke", "Aktie", "Apparat");
+		ComboBox<String> comboBox = new ComboBox<>(val);
+		
+		Button visa = new Button("Visa");
+		Button borsKrasch = new Button("Börskrasch");
+		
+		namnSortering = new RadioButton("Namn");
+		vardeSortering = new RadioButton("Värde");
+		
+		rubrik.setStyle("-fx-font-weight: bold");
+		ny.setStyle("-fx-font-weight: bold");
+		sortering.setStyle("-fx-font-weight: bold");
+		visa.setStyle("-fx-font-weight: bold");
+		borsKrasch.setStyle("-fx-font-weight: bold");
+		namnSortering.setStyle("-fx-font-weight: bold");
+		vardeSortering.setStyle("-fx-font-weight: bold");
+		
+		FlowPane top = new FlowPane();
+		top.setAlignment(Pos.CENTER);
+		top.setPadding(new Insets(5,0,5,0));
+		root.setTop(top);
+		top.getChildren().add(rubrik);
+		
+		HBox left = new HBox();
+		root.setLeft(left);
+		left.getChildren().add(textArea);
+		VBox rightInLeft = new VBox();
+		rightInLeft.setSpacing(10);
+		rightInLeft.setPadding(new Insets(10,10,0,10));
+		left.getChildren().add(rightInLeft);
+		rightInLeft.getChildren().addAll(sortering, namnSortering, vardeSortering);
+		
+		HBox bottom = new HBox();
+		HBox bottomCentering = new HBox();
+		bottomCentering.setSpacing(10);
+		bottom.setAlignment(Pos.CENTER);
+		bottom.setPadding(new Insets(10,0,10,0));
+		root.setBottom(bottom);
+		bottom.getChildren().add(bottomCentering);
+		bottomCentering.getChildren().addAll(ny, comboBox, visa, borsKrasch);
+		
+		visa.setOnAction(new ShowHandler());
+		
 		Scene scene = new Scene(root);
-		area = new TextArea();
-		Button show = new Button("Show");
-		show.setOnAction(new showHandler());
-		root.getChildren().addAll(headLab, area, show);
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		
-		
+}
+	
+	class NewHandler implements EventHandler<ActionEvent> {
+		public void handle(ActionEvent event) {
+			
+		}
 	}
 	
 	class ShowHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
-			area.setText("");
-			area.setText("This is working");
+			textArea.setText("");
+			textArea.setText("This is working");
 			
-			if (nameButton.isSelected()) {
+			if (namnSortering.isSelected()) {
 				allaSaker.sort(new NameComparator());
 				for (Vardesaker sak : allaSaker) {
-					area.appendText(sak.toString());
-					area.appendText("\n");
+					textArea.appendText(sak.toString());
+					textArea.appendText("\n");
 					
 				}
 				
 			}
 			
-			else if (valueButton.isSelected()) {
+			else if (vardeSortering.isSelected()) {
 				allaSaker.sort(new VardeComparator());
 				for (Vardesaker sak : allaSaker) {
-					area.appendText(sak.toString());
-					area.appendText("\n)");
+					textArea.appendText(sak.toString());
+					textArea.appendText("\n)");
 				}
 			}
 		}
