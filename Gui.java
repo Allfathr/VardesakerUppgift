@@ -1,15 +1,26 @@
-// Anton Sandström ansa6928
-// Karl Jonsson
+// Anton Sandström 960726-4430
+// Karl Jonsson 980226-8293
 
 import java.util.*;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.RadioButton;
@@ -22,7 +33,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
-public class Gui extends Application{
+public class Gui<Arv> extends Application{
 	private TextArea textArea;
 	private RadioButton namnSortering;
 	private RadioButton vardeSortering;
@@ -31,7 +42,6 @@ public class Gui extends Application{
 	@Override
 	public void start(Stage primaryStage) {
 		BorderPane root = new BorderPane();
-		
 		Label rubrik = new Label("Värdesaker");
 		Label ny = new Label("Ny:");
 		Label sortering = new Label("Sortering");
@@ -86,24 +96,159 @@ public class Gui extends Application{
 		bottomCentering.getChildren().addAll(ny, comboBox, visa, borsKrasch);
 		
 		visa.setOnAction(new ShowHandler());
+		borsKrasch.setOnAction(new ExchangeHandler());
+		comboBox.setOnAction(new NewHandler());
 		
 		Scene scene = new Scene(root);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		primaryStage.setTitle("Sakregister");
 }
+	class SmyckenAlert extends Alert {
+		private TextField nameField = new TextField();
+		private TextField stoneField = new TextField();
+		private CheckBox box = new CheckBox("Guld");
+
+		SmyckenAlert() {
+			super(AlertType.CONFIRMATION);
+
+			GridPane grid = new GridPane();
+			grid.addRow(0, new Label("Typ:"), nameField);
+			grid.addRow(1,  new Label("Adelsstenar:"), stoneField);
+			grid.addRow(2, box);
+
+			getDialogPane().setContent(grid);
+		}
+		public String getNamn() {
+			return nameField.getText();
+		}
+
+		public int getStenar() {
+			return Integer.parseInt(stoneField.getText());
+		}
+
+		public boolean isGuld() {
+			return box.isSelected();
+		}
+	}
+	
+	class AktieAlert extends Alert {
+		private TextField nameField = new TextField();
+		private TextField antalField = new TextField();
+		private TextField kurs = new TextField();
+		
+		AktieAlert() {
+			super(AlertType.CONFIRMATION);
+			GridPane grid = new GridPane();
+			grid.addRow(0, new Label("Namn:"), nameField);
+			grid.addRow(1,  new Label("Antal:"), antalField);
+			grid.addRow(2, new Label("Kurs:"), kurs);
+
+			getDialogPane().setContent(grid);
+		}
+		
+		public String getNamn() {
+			return nameField.getText();
+		}
+		
+		public int getAntal() {
+			return Integer.parseInt(antalField.getText());
+		}
+		
+		public double getKurs() {
+			return Double.parseDouble(kurs.getText());
+		}
+	}
+	
+	class ApparatAlert extends Alert {
+		private TextField nameField = new TextField();
+		private TextField priceField = new TextField();
+		private TextField slitage = new TextField();
+		
+		ApparatAlert() {
+			super(AlertType.CONFIRMATION);
+			GridPane grid = new GridPane();
+			grid.addRow(0, new Label("Typ av föremål:"), nameField);
+			grid.addRow(1,  new Label("Pris:"), priceField);
+			grid.addRow(2, new Label("Slitage"), slitage);
+
+			getDialogPane().setContent(grid);
+
+		}
+		
+		public String getNamn() {
+			return nameField.getText();
+		}
+		
+		public double getPris() {
+			return Double.parseDouble(priceField.getText());
+		}
+		
+		public int getSlitage() {
+			return Integer.parseInt(slitage.getText());
+		}
+	}
 	
 	class NewHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
-			
+			try {
+				ComboBox cb = (ComboBox) event.getSource();
+				String choice = (String) cb.getValue();
+				
+				if (choice.equalsIgnoreCase("smycke")) {
+					SmyckenAlert sa = new SmyckenAlert();
+					Optional<ButtonType> result = sa.showAndWait();
+					if (result.isPresent() && result.get() == ButtonType.OK) {
+						String namn = sa.getNamn();
+						if (namn.trim().isEmpty()) {
+							Alert msg = new Alert(AlertType.ERROR, "Tomt namn!");
+							msg.showAndWait();
+						}
+					}
+					Smycken s = new Smycken(sa.getNamn(), sa.getStenar(), sa.isGuld());
+					allaSaker.add(s);
+
+				}
+
+				else if (choice.equalsIgnoreCase("aktie")) {
+					AktieAlert aa = new AktieAlert();
+					Optional<ButtonType> result = aa.showAndWait();
+					if (result.isPresent() && result.get() == ButtonType.OK) {
+						String namn = aa.getNamn();
+						if (namn.trim().isEmpty()) {
+							Alert msg = new Alert(AlertType.ERROR, "Tomt namn!");
+							msg.showAndWait();
+						}
+					}
+					Aktie a = new Aktie(aa.getNamn(), aa.getKurs(), aa.getAntal());
+					allaSaker.add(a);
+				}
+
+				else if (choice.equalsIgnoreCase("apparat")) {
+					ApparatAlert appAl = new ApparatAlert();
+					Optional<ButtonType> result = appAl.showAndWait();
+					if (result.isPresent() && result.get() == ButtonType.OK) {
+						String namn = appAl.getNamn();
+						if (namn.trim().isEmpty()) {
+							Alert msg = new Alert(AlertType.ERROR, "Tomt namn!");
+							msg.showAndWait();
+						}
+					}
+					Apparat a = new Apparat(appAl.getNamn(), appAl.getPris(), appAl.getSlitage());
+					allaSaker.add(a);
+				}
+						
+			} catch (NumberFormatException e) {
+				Alert msg = new Alert(AlertType.ERROR);
+				msg.setContentText("Fel inmatning!");
+				msg.showAndWait();
+			}
 		}
 	}
 	
 	class ShowHandler implements EventHandler<ActionEvent> {
 		public void handle(ActionEvent event) {
-			textArea.setText("");
-			textArea.setText("This is working");
-			
+			textArea.setText("");		
 			if (namnSortering.isSelected()) {
 				allaSaker.sort(new NameComparator());
 				for (Vardesaker sak : allaSaker) {
@@ -118,7 +263,7 @@ public class Gui extends Application{
 				allaSaker.sort(new VardeComparator());
 				for (Vardesaker sak : allaSaker) {
 					textArea.appendText(sak.toString());
-					textArea.appendText("\n)");
+					textArea.appendText("\n");
 				}
 			}
 		}
